@@ -1,10 +1,13 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class Bot {
     private LinearOpMode opMode;
@@ -28,10 +31,10 @@ public class Bot {
 
 
     public void init(HardwareMap map) {
-        leftMotorFront = map.get(DcMotor.class, "left-motor-front");
-        rightMotorFront = map.get(DcMotor.class, "right-motor-front");
-        leftMotorBack = map.get(DcMotor.class, "left-motor-back");
-        rightMotorBack = map.get(DcMotor.class, "right-motor-back");
+        leftMotorFront = map.get(DcMotor.class, "left_front");
+        rightMotorFront = map.get(DcMotor.class, "right_front");
+        leftMotorBack = map.get(DcMotor.class, "left_back");
+        rightMotorBack = map.get(DcMotor.class, "right_back");
 
         leftMotorFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightMotorFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -116,6 +119,79 @@ public class Bot {
             rightMotorFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             leftMotorBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             rightMotorBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+    }
+
+    public Auto.piecePosition autoEncoderDrive(double speed,
+                             double leftInches, double rightInches,
+                             double timeoutS) {
+
+        int newFrontLeftTarget;
+        int newFrontRightTarget;
+        int newBackLeftTarget;
+        int newBackRightTarget;
+
+        Auto.piecePosition block;
+
+        // Ensure that the opmode is still active
+        if (opMode.opModeIsActive()) {
+            // Determine new target position, and pass to motor controller
+            newFrontLeftTarget = leftMotorFront.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
+            newFrontRightTarget = rightMotorFront.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
+            newBackLeftTarget = leftMotorBack.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
+            newBackRightTarget = rightMotorBack.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
+            leftMotorFront.setTargetPosition(newFrontLeftTarget);
+            rightMotorFront.setTargetPosition(newFrontRightTarget);
+            leftMotorBack.setTargetPosition(newBackLeftTarget);
+            rightMotorBack.setTargetPosition(newBackRightTarget);
+
+
+            // Turn On RUN_TO_POSITION
+            rightMotorFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            leftMotorFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightMotorBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            leftMotorBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+            leftMotorFront.setPower(Math.abs(speed));
+            rightMotorFront.setPower(Math.abs(speed));
+            leftMotorBack.setPower(Math.abs(speed));
+            rightMotorBack.setPower(Math.abs(speed));
+
+            // keep looping while we are still active, and there is time left, and both motors are running.
+            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
+            // its target position, the motion will stop.  This is "safer" in the event that the robot will
+            // always end the motion as soon as possible.
+            // However, if you require that BOTH motors have finished their moves before the robot continues
+            // onto the next step, use (isBusy() || isBusy()) in the loop test.
+            while (opMode.opModeIsActive() &&
+                    (runtime.seconds() < timeoutS) &&
+                    (leftMotorFront.isBusy() || rightMotorFront.isBusy() || leftMotorBack.isBusy() || rightMotorBack.isBusy())) {
+                if (block == null) {
+                    if (Auto.rangeSensor.getDistance(DistanceUnit.CM) <= /* distance */) {
+                        block = Auto.piecePosition.close;
+                    } else if (Auto.rangeSensor.getDistance(DistanceUnit.CM) <= /* distance */) {
+                        block = Auto.piecePosition.medium;
+                    } else if (Auto.rangeSensor.getDistance(DistanceUnit.CM) <= /* distance */) {
+                        block = Auto.piecePosition.far;
+                    }
+                }
+            }
+
+            // Stop all motion;
+            leftMotorFront.setPower(0);
+            rightMotorFront.setPower(0);
+            leftMotorBack.setPower(0);
+            rightMotorBack.setPower(0);
+
+            // Turn off RUN_TO_POSITION
+            leftMotorFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            rightMotorFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            leftMotorBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            rightMotorBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            return block;
         }
     }
 

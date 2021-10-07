@@ -3,25 +3,33 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Autonomous(name = "Auto")
 public class Auto extends LinearOpMode {
-    Rev2mDistanceSensor rangeSensor;
+    private ElapsedTime runtime = new ElapsedTime();
+    public static Rev2mDistanceSensor rangeSensor;
+    public enum piecePosition {
+        close,
+        medium,
+        far
+    }
 
     @Override
     public void runOpMode() throws InterruptedException {
         Bot bot = new Bot(this);
-
-        rangeSensor = hardwareMap.get(Rev2mDistanceSensor.class, "sensor_range");
+        Rev2mDistanceSensor rangeSensor = hardwareMap.get(Rev2mDistanceSensor.class, "sensor_range");
 
         waitForStart();
+        runtime.reset();
+        
+        piecePosition block = bot.autoEncoderDrive(0.75, 12, 12, 5);
+    }
 
-        bot.encoderDrive(0.75, 12, 12, 5);
-
-        telemetry.addData("time", "%.2f cm", getRuntime());
-        telemetry.addData("cm", "%.2f cm", rangeSensor.getDistance(DistanceUnit.CM));
-        telemetry.update();
+    public double rangeSensorFunction() {
+        return rangeSensor.getDistance(DistanceUnit.CM);
     }
 }
         /*
