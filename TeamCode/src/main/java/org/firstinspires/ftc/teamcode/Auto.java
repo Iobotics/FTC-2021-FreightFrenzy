@@ -20,17 +20,35 @@ public class Auto extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         Bot bot = new Bot(this);
-        Rev2mDistanceSensor rangeSensor = hardwareMap.get(Rev2mDistanceSensor.class, "sensor_range");
+        rangeSensor = hardwareMap.get(Rev2mDistanceSensor.class, "sensor_range");
 
         waitForStart();
         runtime.reset();
-        
+
+        // bot.encoderDrive(0.75, 26.5, 26.5, 30);
+        // piecePosition block = blockPosition();
         piecePosition block = bot.autoEncoderDrive(0.75, 45, 45, 5);
-        telemetry.addData("Block position", block.toString());
+
+        while (true) {
+            telemetry.addData("Block position", block.toString());
+            telemetry.update();
+        }
+        // bot.encoderDrive(0.75, 45 - 26.5, 45 - 26.5, 30);
     }
 
-    public double rangeSensorFunction() {
+    public static double rangeSensorFunction() {
         return rangeSensor.getDistance(DistanceUnit.CM);
+    }
+
+    public piecePosition blockPosition() {
+        if (rangeSensor.getDistance(DistanceUnit.CM) <= 13) {
+            return piecePosition.close;
+        } else if (rangeSensor.getDistance(DistanceUnit.CM) <= 30) {
+            return piecePosition.medium;
+        }
+        else {
+            return piecePosition.far;
+        }
     }
 }
         /*

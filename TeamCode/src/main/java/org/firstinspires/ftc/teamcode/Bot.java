@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -169,9 +168,11 @@ public class Bot {
                     (runtime.seconds() < timeoutS) &&
                     (leftMotorFront.isBusy() || rightMotorFront.isBusy() || leftMotorBack.isBusy() || rightMotorBack.isBusy())) {
                 if (block == null) {
-                    if (Auto.rangeSensor.getDistance(DistanceUnit.CM) <= 13) {
+                    opMode.telemetry.addData("Block Position: ", "%.2f cm", Auto.rangeSensorFunction());
+                    opMode.telemetry.update();
+                    if (Auto.rangeSensorFunction() <= 20) {
                         block = Auto.piecePosition.close;
-                    } else if (Auto.rangeSensor.getDistance(DistanceUnit.CM) <= 30) {
+                    } else if (Auto.rangeSensorFunction() <= 30) {
                         block = Auto.piecePosition.medium;
                     }
                 }
