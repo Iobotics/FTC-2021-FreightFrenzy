@@ -131,7 +131,7 @@ public class Bot {
         int newBackLeftTarget;
         int newBackRightTarget;
 
-        Auto.piecePosition block;
+        Auto.piecePosition block = null;
 
         // Ensure that the opmode is still active
         if (opMode.opModeIsActive()) {
@@ -169,12 +169,10 @@ public class Bot {
                     (runtime.seconds() < timeoutS) &&
                     (leftMotorFront.isBusy() || rightMotorFront.isBusy() || leftMotorBack.isBusy() || rightMotorBack.isBusy())) {
                 if (block == null) {
-                    if (Auto.rangeSensor.getDistance(DistanceUnit.CM) <= /* distance */) {
+                    if (Auto.rangeSensor.getDistance(DistanceUnit.CM) <= 13) {
                         block = Auto.piecePosition.close;
-                    } else if (Auto.rangeSensor.getDistance(DistanceUnit.CM) <= /* distance */) {
+                    } else if (Auto.rangeSensor.getDistance(DistanceUnit.CM) <= 30) {
                         block = Auto.piecePosition.medium;
-                    } else if (Auto.rangeSensor.getDistance(DistanceUnit.CM) <= /* distance */) {
-                        block = Auto.piecePosition.far;
                     }
                 }
             }
@@ -191,7 +189,18 @@ public class Bot {
             leftMotorBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             rightMotorBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+            if (block != null) {
+                return block;
+            }
+            else {
+                return Auto.piecePosition.far;
+            }
+        }
+        if (block != null) {
             return block;
+        }
+        else {
+            return Auto.piecePosition.far;
         }
     }
 

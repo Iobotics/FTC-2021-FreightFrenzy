@@ -25,7 +25,8 @@ public class Auto extends LinearOpMode {
         waitForStart();
         runtime.reset();
         
-        piecePosition block = bot.autoEncoderDrive(0.75, 12, 12, 5);
+        piecePosition block = bot.autoEncoderDrive(0.75, 45, 45, 5);
+        telemetry.addData("Block position", block.toString());
     }
 
     public double rangeSensorFunction() {
