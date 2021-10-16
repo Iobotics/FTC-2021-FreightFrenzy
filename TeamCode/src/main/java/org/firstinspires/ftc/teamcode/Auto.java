@@ -31,18 +31,33 @@ public class Auto extends LinearOpMode {
         telemetry.update();
         */
 
-        bot.encoderDrive(1, 26, 26, 30);
+        bot.encoderDrive(1, 25.5, 25.5, 30);
         double distanceAvg = 0;
         for(int i = 0; i < 50; i++) {
             distanceAvg += rangeSensorFunction();
         }
         distanceAvg = distanceAvg / 50;
+        piecePosition block = blockPosition(distanceAvg);
         telemetry.addData("Average Distance", "%.2f", distanceAvg);
+        telemetry.addData("Position", "%s", block.toString());
         telemetry.update();
-        wait(5000);
+
+        bot.encoderDrive(1, 30, 30, 30);
     }
 
     public static double rangeSensorFunction() {
         return rangeSensor.getDistance(DistanceUnit.INCH);
+    }
+
+    piecePosition blockPosition(double position) {
+        if(position < 8) {
+            return piecePosition.close;
+        }
+        else if(position < 14) {
+            return piecePosition.medium;
+        }
+        else {
+            return piecePosition.far;
+        }
     }
 }
