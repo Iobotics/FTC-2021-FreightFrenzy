@@ -25,30 +25,13 @@ public class Auto extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        // bot.encoderDrive(0.75, 26.5, 26.5, 30);
-        // piecePosition block = blockPosition();
         piecePosition block = bot.autoEncoderDrive(0.75, 45, 45, 5);
-
-        while (true) {
-            telemetry.addData("Block position", block.toString());
-            telemetry.update();
-        }
-        // bot.encoderDrive(0.75, 45 - 26.5, 45 - 26.5, 30);
+        telemetry.addData("Block position", block.toString());
+        telemetry.update();
     }
 
     public static double rangeSensorFunction() {
         return rangeSensor.getDistance(DistanceUnit.CM);
-    }
-
-    public piecePosition blockPosition() {
-        if (rangeSensor.getDistance(DistanceUnit.CM) <= 13) {
-            return piecePosition.close;
-        } else if (rangeSensor.getDistance(DistanceUnit.CM) <= 30) {
-            return piecePosition.medium;
-        }
-        else {
-            return piecePosition.far;
-        }
     }
 }
         /*
