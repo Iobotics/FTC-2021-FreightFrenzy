@@ -25,29 +25,24 @@ public class Auto extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
+        /*
         piecePosition block = bot.autoEncoderDrive(0.75, 45, 45, 5);
         telemetry.addData("Block position", block.toString());
         telemetry.update();
+        */
+
+        bot.encoderDrive(1, 26, 26, 30);
+        double distanceAvg = 0;
+        for(int i = 0; i < 50; i++) {
+            distanceAvg += rangeSensorFunction();
+        }
+        distanceAvg = distanceAvg / 50;
+        telemetry.addData("Average Distance", "%.2f", distanceAvg);
+        telemetry.update();
+        wait(5000);
     }
 
     public static double rangeSensorFunction() {
-        return rangeSensor.getDistance(DistanceUnit.CM);
+        return rangeSensor.getDistance(DistanceUnit.INCH);
     }
 }
-        /*
-        RANGE1 = hardwareMap.i2cDevice.get("range");
-        RANGE1Reader = new I2cDeviceSynchImpl(RANGE1, RANGE1ADDRESS, false);
-        RANGE1Reader.engage();
-
-        waitForStart();
-        Bot bot = new Bot(this);
-
-        long millis = System.currentTimeMillis();
-
-        while (opModeIsActive()) {
-            range1Cache = RANGE1Reader.read(RANGE1_REG_START, RANGE1_READ_LENGTH);
-
-            telemetry.addData("Ultra Sonic", range1Cache[0] & 0xFF);
-            telemetry.addData("ODS", range1Cache[1] & 0xFF);
-        }
-        */
