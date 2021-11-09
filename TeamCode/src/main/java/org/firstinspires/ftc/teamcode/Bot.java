@@ -10,16 +10,21 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class Bot {
     private LinearOpMode opMode;
-    private DcMotor leftMotorFront; //Port: 2.2
-    private DcMotor rightMotorFront; //Port: 2.0
-    private DcMotor leftMotorBack; //Port: 2.3
-    private DcMotor rightMotorBack; //Port: 2.1
+    private DcMotor leftMotorFront; // Port:
+    private DcMotor rightMotorFront; // Port:
+    private DcMotor leftMotorBack; // Port:
+    private DcMotor rightMotorBack; // Port:
+    private DcMotor liftMotorRight; // Port:
 
-    static final double COUNTS_PER_MOTOR_REV = 1120;    // https://www.generationrobots.com/en/402854-neverest-40-gear-motor-with-401-reduction-and-encoder.html
+    static final double COUNTS_PER_MOTOR_REV_20 = 537.6;    // https://www.andymark.com/products/neverest-orbital-20-gearmotor
+    static final double COUNTS_PER_MOTOR_REV_40 = 1680;    // https://www.andymark.com/products/neverest-classic-60-gearmotor
     static final double DRIVE_GEAR_REDUCTION = 1.0;     // This is < 1.0 if geared UP
     static final double WHEEL_DIAMETER_INCHES = 4;     // For figuring circumference
-    static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
-            (WHEEL_DIAMETER_INCHES * Math.PI);
+
+    static final double COUNTS_PER_INCH(double COUNTS_PER_MOTOR_REV) {
+        return (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+                (WHEEL_DIAMETER_INCHES * Math.PI);
+    }
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -34,11 +39,13 @@ public class Bot {
         rightMotorFront = map.get(DcMotor.class, "right_front");
         leftMotorBack = map.get(DcMotor.class, "left_back");
         rightMotorBack = map.get(DcMotor.class, "right_back");
+        // liftMotorRight = map.get(DcMotor.class, "lift_right");
 
         leftMotorFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightMotorFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftMotorBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightMotorBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        // liftMotorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         leftMotorFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftMotorBack.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -64,10 +71,10 @@ public class Bot {
         // Ensure that the opmode is still active
         if (opMode.opModeIsActive()) {
             // Determine new target position, and pass to motor controller
-            newFrontLeftTarget = leftMotorFront.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
-            newFrontRightTarget = rightMotorFront.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
-            newBackLeftTarget = leftMotorBack.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
-            newBackRightTarget = rightMotorBack.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
+            newFrontLeftTarget = leftMotorFront.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH(COUNTS_PER_MOTOR_REV_20));
+            newFrontRightTarget = rightMotorFront.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH(COUNTS_PER_MOTOR_REV_20));
+            newBackLeftTarget = leftMotorBack.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH(COUNTS_PER_MOTOR_REV_20));
+            newBackRightTarget = rightMotorBack.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH(COUNTS_PER_MOTOR_REV_20));
             leftMotorFront.setTargetPosition(newFrontLeftTarget);
             rightMotorFront.setTargetPosition(newFrontRightTarget);
             leftMotorBack.setTargetPosition(newBackLeftTarget);
@@ -135,10 +142,10 @@ public class Bot {
         // Ensure that the opmode is still active
         if (opMode.opModeIsActive()) {
             // Determine new target position, and pass to motor controller
-            newFrontLeftTarget = leftMotorFront.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
-            newFrontRightTarget = rightMotorFront.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
-            newBackLeftTarget = leftMotorBack.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
-            newBackRightTarget = rightMotorBack.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
+            newFrontLeftTarget = leftMotorFront.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH(COUNTS_PER_MOTOR_REV_20));
+            newFrontRightTarget = rightMotorFront.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH(COUNTS_PER_MOTOR_REV_20));
+            newBackLeftTarget = leftMotorBack.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH(COUNTS_PER_MOTOR_REV_20));
+            newBackRightTarget = rightMotorBack.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH(COUNTS_PER_MOTOR_REV_20));
             leftMotorFront.setTargetPosition(newFrontLeftTarget);
             rightMotorFront.setTargetPosition(newFrontRightTarget);
             leftMotorBack.setTargetPosition(newBackLeftTarget);

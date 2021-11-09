@@ -5,6 +5,7 @@ import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
@@ -18,6 +19,9 @@ import java.util.Locale;
 public class TeleOp extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     BNO055IMU imu;
+
+    double leftPower;
+    double rightPower;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -39,7 +43,10 @@ public class TeleOp extends LinearOpMode {
         runtime.reset();
 
         while (opModeIsActive()) {
-            bot.setDriveTrain(-gamepad1.left_stick_y, -gamepad1.right_stick_y);
+            leftPower    = Range.clip(-gamepad1.left_stick_y + gamepad1.left_stick_x, -1.0, 1.0) ;
+            rightPower   = Range.clip(-gamepad1.left_stick_y - gamepad1.left_stick_x, -1.0, 1.0) ;
+
+            bot.setDriveTrain(leftPower, rightPower);
 
             Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 

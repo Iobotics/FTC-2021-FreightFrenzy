@@ -75,7 +75,7 @@ public class Auto extends LinearOpMode {
         }
         bot.setDriveTrain(0,0);
 
-        bot.encoderDrive(1, 18, 18, 30);2
+        bot.encoderDrive(1, 18, 18, 30);
     }
 
     public static double rangeSensorFunction() {
