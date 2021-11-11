@@ -20,9 +20,6 @@ public class TeleOp extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     BNO055IMU imu;
 
-    double leftPower;
-    double rightPower;
-
     @Override
     public void runOpMode() throws InterruptedException {
         Bot bot = new Bot(this);
@@ -39,20 +36,39 @@ public class TeleOp extends LinearOpMode {
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
 
+        double servoPosition = 1.0;
+        double servoTimeout = 0;
+
         waitForStart();
         runtime.reset();
 
         while (opModeIsActive()) {
-            leftPower    = Range.clip(-gamepad1.left_stick_y + gamepad1.left_stick_x, -1.0, 1.0) ;
-            rightPower   = Range.clip(-gamepad1.left_stick_y - gamepad1.left_stick_x, -1.0, 1.0) ;
+            // If your number X falls between A and B, and you would like Y to fall between C and D, you can apply the following linear transform:
+            // Y = (X-A)/(B-A) * (D-C) + C
+            bot.setDriveTrain(-gamepad1.left_stick_y * 0.5, -gamepad1.right_stick_y * 0.5);
 
-            bot.setDriveTrain(leftPower, rightPower);
+            if(gamepad1.dpad_up) {
+                bot.setLift(0.25);
+            }
+            else if (gamepad1.dpad_down) {
+                bot.setLift(-0.25);
+            }
+            else {
+                bot.setLift(0);
+            }
+
+            if(gamepad1.a && servoTimeout <= runtime.milliseconds()) {
+                bot.servoPosition(servoPosition);
+                servoPosition = (servoPosition == 0.0) ? 1.0 : 0.0;
+                servoTimeout = runtime.milliseconds() + 500;
+            }
 
             Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
-            // telemetry.addData("time", "%.2f cm", runtime);
             telemetry.addData("cm", "%.2f cm", rangeSensor.getDistance(DistanceUnit.CM));
             telemetry.addData("heading", formatAngle(angles.angleUnit, angles.firstAngle));
+            telemetry.addData("lift position", "%d", bot.getLiftPosition());
+            telemetry.addData("servo position", "%.2f", (servoPosition == 0.0) ? 1.0 : 0.0);
             telemetry.update();
         }
     }

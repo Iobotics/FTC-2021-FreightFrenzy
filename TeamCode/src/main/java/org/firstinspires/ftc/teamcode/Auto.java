@@ -44,7 +44,7 @@ public class Auto extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        bot.encoderDrive(1, 25.5, 25.5, 30);
+        bot.encoderDrive(0.1, 25.5, 25.5, 30);
         double distanceAvg = 0;
         for(int i = 0; i < 50; i++) {
             distanceAvg += rangeSensorFunction();
@@ -55,7 +55,7 @@ public class Auto extends LinearOpMode {
         telemetry.addData("Position", "%s", block.toString());
         telemetry.update();
 
-        bot.encoderDrive(1, 30, 30, 30);
+        bot.encoderDrive(0.1, 30, 30, 30);
 
         Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         double startAngle = angle(angles.angleUnit, angles.firstAngle);
@@ -63,7 +63,7 @@ public class Auto extends LinearOpMode {
         double currentAngle = angle(angles.angleUnit, angles.firstAngle);
 
         while(Math.abs(currentAngle) < targetAngle) {
-            bot.setDriveTrain(0.5,0);
+            bot.setDriveTrain(0.1,0);
             angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             currentAngle = angle(angles.angleUnit, angles.firstAngle);
 
@@ -75,7 +75,7 @@ public class Auto extends LinearOpMode {
         }
         bot.setDriveTrain(0,0);
 
-        bot.encoderDrive(1, 18, 18, 30);
+        bot.encoderDrive(0.1, 18, 18, 30);
     }
 
     public static double rangeSensorFunction() {
