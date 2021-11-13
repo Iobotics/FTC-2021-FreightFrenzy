@@ -46,6 +46,12 @@ public class Bot {
         rightMotorBack = map.get(DcMotor.class, "right_back");
         liftMotor = map.get(DcMotor.class, "lift");
 
+        leftMotorFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightMotorFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftMotorBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightMotorBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         leftMotorFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightMotorFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftMotorBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -57,9 +63,20 @@ public class Bot {
         liftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         servo = map.get(Servo.class, "claw");
-        // servo.setDirection(Servo.Direction.REVERSE);
+        servo.setDirection(Servo.Direction.REVERSE);
     }
 
+
+    public int getRightFrontWheelPosition() {
+        return rightMotorFront.getCurrentPosition();
+    }
+    public int getRightBackWheelPosition() {
+        return rightMotorBack.getCurrentPosition();
+    }
+    public int getLeftFrontWheelPosition() { return leftMotorFront.getCurrentPosition(); }
+    public int getLeftBackWheelPosition() {
+        return leftMotorBack.getCurrentPosition();
+    }
 
     public void setDriveTrain(double left, double right) {
         leftMotorFront.setPower(left);

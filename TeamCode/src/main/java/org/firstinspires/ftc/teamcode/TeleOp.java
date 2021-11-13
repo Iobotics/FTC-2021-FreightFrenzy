@@ -36,7 +36,7 @@ public class TeleOp extends LinearOpMode {
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
 
-        double servoPosition = 1.0;
+        double servoPosition = 0.75;
         double servoTimeout = 0;
 
         waitForStart();
@@ -47,10 +47,10 @@ public class TeleOp extends LinearOpMode {
             // Y = (X-A)/(B-A) * (D-C) + C
             bot.setDriveTrain(-gamepad1.left_stick_y * 0.5, -gamepad1.right_stick_y * 0.5);
 
-            if(gamepad1.dpad_up) {
+            if(gamepad1.left_bumper) {
                 bot.setLift(0.25);
             }
-            else if (gamepad1.dpad_down) {
+            else if (gamepad1.left_trigger > 0.2) {
                 bot.setLift(-0.25);
             }
             else {
@@ -59,16 +59,22 @@ public class TeleOp extends LinearOpMode {
 
             if(gamepad1.a && servoTimeout <= runtime.milliseconds()) {
                 bot.servoPosition(servoPosition);
-                servoPosition = (servoPosition == 0.0) ? 1.0 : 0.0;
-                servoTimeout = runtime.milliseconds() + 500;
+                servoPosition = (servoPosition == 0.1625) ? 0.75 : 0.1625;
+                servoTimeout = runtime.milliseconds() + 250;
             }
 
             Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
+            telemetry.addData("time", "%.2f ms", runtime.milliseconds());
             telemetry.addData("cm", "%.2f cm", rangeSensor.getDistance(DistanceUnit.CM));
             telemetry.addData("heading", formatAngle(angles.angleUnit, angles.firstAngle));
-            telemetry.addData("lift position", "%d", bot.getLiftPosition());
-            telemetry.addData("servo position", "%.2f", (servoPosition == 0.0) ? 1.0 : 0.0);
+            telemetry.addData("lift position", bot.getLiftPosition());
+            telemetry.addData("left front wheel position", bot.getLeftFrontWheelPosition());
+            telemetry.addData("left back wheel position", bot.getLeftBackWheelPosition());
+            telemetry.addData("right front wheel position", bot.getRightFrontWheelPosition());
+            telemetry.addData("right back wheel position", bot.getRightBackWheelPosition());
+            telemetry.addData("servo position", "%.2f", (servoPosition == 0.1625) ? 0.75 : 0.1625);
+            telemetry.addData("servo timeout?", "%.2f", servoTimeout);
             telemetry.update();
         }
     }
