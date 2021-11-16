@@ -159,6 +159,7 @@ public class Bot {
     }
 
     public void setLift(double power) {
+        liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         liftMotor.setPower(power);
     }
 
@@ -201,18 +202,11 @@ public class Bot {
         }
     }
 
-    public void liftStartRunToPosition() {
+    public void liftRunToPosition() {
         if(opMode.opModeIsActive()) {
             liftMotor.setTargetPosition(liftMotor.getCurrentPosition());
             liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             liftMotor.setPower(1);
-        }
-    }
-
-    public void liftEndRunToPosition() {
-        if(opMode.opModeIsActive()) {
-            liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            liftMotor.setPower(0);
         }
     }
 

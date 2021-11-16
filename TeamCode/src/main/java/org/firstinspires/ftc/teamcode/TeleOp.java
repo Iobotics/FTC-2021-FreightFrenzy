@@ -37,7 +37,7 @@ public class TeleOp extends LinearOpMode {
         imu.initialize(parameters);
 
         int liftBottom = bot.getLiftPosition();
-        int liftTop = liftBottom + (int) (10 * ((1680 * 1.0) / (4.0 * Math.PI)));
+        int liftTop = liftBottom + (int) (12 * ((1680 * 1.0) / (4.0 * Math.PI)));
 
         double liftTimeout = 0;
 
@@ -56,13 +56,16 @@ public class TeleOp extends LinearOpMode {
             bot.setDriveTrain(-gamepad1.left_stick_y * 0.75, -gamepad1.right_stick_y * 0.75);
 
             if(gamepad1.left_bumper) {
+                // bot.liftEndRunToPosition();
                 bot.setLift(0.4);
             }
             else if (gamepad1.left_trigger > 0.2) {
+                // bot.liftEndRunToPosition();
                 bot.setLift(-0.4);
             }
             else {
-                bot.setLift(0);
+                bot.liftRunToPosition();
+                // bot.setLift(0);
             }
 
             if(gamepad1.a && servoTimeout <= runtime.milliseconds()) {
@@ -88,17 +91,6 @@ public class TeleOp extends LinearOpMode {
             }
             else {
                 bot.setSpin(0);
-            }
-
-            if(gamepad1.x && runToPositionTimeout <= runtime.milliseconds()) {
-                if (runToPosition) {
-                    runToPosition = false;
-                    bot.liftEndRunToPosition();
-                } else {
-                    runToPosition = true;
-                    bot.liftStartRunToPosition();
-                }
-                runToPositionTimeout = runtime.milliseconds() + 250;
             }
 
             Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
