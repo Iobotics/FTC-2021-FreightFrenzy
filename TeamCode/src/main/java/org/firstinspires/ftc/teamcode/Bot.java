@@ -16,13 +16,14 @@ public class Bot {
     private DcMotor leftMotorBack; // Port:
     private DcMotor rightMotorBack; // Port:
     private DcMotor liftMotor; // Port:
+    private DcMotor spinMotor;
 
     private Servo servo;
 
     // drivetrain motors
     static final double COUNTS_PER_MOTOR_REV_20 = 537.6;    // https://www.andymark.com/products/neverest-orbital-20-gearmotor
     // lift motors
-    static final double COUNTS_PER_MOTOR_REV_40 = 1680;    // https://www.andymark.com/products/neverest-classic-60-gearmotor
+    static final double COUNTS_PER_MOTOR_REV_60 = 1680;    // https://www.andymark.com/products/neverest-classic-60-gearmotor
     static final double DRIVE_GEAR_REDUCTION = 1.0;     // This is < 1.0 if geared UP
     static final double WHEEL_DIAMETER_INCHES = 4;     // For figuring circumference
 
@@ -45,6 +46,7 @@ public class Bot {
         leftMotorBack = map.get(DcMotor.class, "left_back");
         rightMotorBack = map.get(DcMotor.class, "right_back");
         liftMotor = map.get(DcMotor.class, "lift");
+        spinMotor = map.get(DcMotor.class, "spin");
 
         leftMotorFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightMotorFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -57,6 +59,8 @@ public class Bot {
         leftMotorBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightMotorBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        spinMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         rightMotorFront.setDirection(DcMotorSimple.Direction.REVERSE);
         rightMotorBack.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -197,8 +201,27 @@ public class Bot {
         }
     }
 
+    public void liftStartRunToPosition() {
+        if(opMode.opModeIsActive()) {
+            liftMotor.setTargetPosition(liftMotor.getCurrentPosition());
+            liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            liftMotor.setPower(1);
+        }
+    }
+
+    public void liftEndRunToPosition() {
+        if(opMode.opModeIsActive()) {
+            liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            liftMotor.setPower(0);
+        }
+    }
+
     public void servoPosition(double position) {
         servo.setPosition(position);
+    }
+
+    public void setSpin(double power) {
+        spinMotor.setPower(power);
     }
 
     public double absRange(double input, double range){
