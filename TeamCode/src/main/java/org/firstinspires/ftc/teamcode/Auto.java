@@ -41,10 +41,15 @@ public class Auto extends LinearOpMode {
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
 
+        int liftBottom = bot.getLiftPosition();
+
         waitForStart();
         runtime.reset();
 
-        bot.encoderDrive(0.5, 28, 28, 30);
+        bot.servoPosition(0.1625);
+        bot.liftRunToPosition();
+
+        bot.encoderDrive(0.5, 27, 27, 30);
         double distanceAvg = 0;
         for(int i = 0; i < 50; i++) {
             distanceAvg += rangeSensorFunction();
@@ -55,15 +60,15 @@ public class Auto extends LinearOpMode {
         telemetry.addData("Position", "%s", block.toString());
         telemetry.update();
 
-        bot.encoderDrive(0.5, 30, 30, 30);
+        bot.encoderDrive(0.5, 11, 11, 30);
 
         Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         double startAngle = angle(angles.angleUnit, angles.firstAngle);
-        double targetAngle = startAngle + (90 - 10);
+        double targetAngle = startAngle + (90 - 15);
         double currentAngle = angle(angles.angleUnit, angles.firstAngle);
 
         while(Math.abs(currentAngle) < targetAngle) {
-            bot.setDriveTrain(0.1,0);
+            bot.setDriveTrain(0.5,-0.5);
             angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             currentAngle = angle(angles.angleUnit, angles.firstAngle);
 
@@ -74,8 +79,76 @@ public class Auto extends LinearOpMode {
             telemetry.update();
         }
         bot.setDriveTrain(0,0);
+        /*
+        switch (block) {
+            case close:
+                telemetry.addData("Position", "%s", block.toString());
+                bot.encoderDrive(0.5, 6, 6, 30);
+                break;
+            case medium:
+                telemetry.addData("Position", "%s", block.toString());
+                bot.encoderDrive(0.5, 6.5, 6.5, 30);
+                break;
+            case far:
+                telemetry.addData("Position", "%s", block.toString());
+                bot.liftToPosition(0.5, liftBottom + (int) (6 * ((1680 * 1.0) / (4.0 * Math.PI))), 10);
+                bot.encoderDrive(0.5, 25, 25, 30);
 
-        bot.encoderDrive(0.5, 18, 18, 30);
+                double timeout = runtime.milliseconds() + 500;
+                while(timeout <= runtime.milliseconds()) {}
+                timeout += 500;
+
+                bot.servoPosition(0.75);
+
+                while(timeout <= runtime.milliseconds()) {
+                }
+
+                bot.encoderDrive(0.5, -21, -21, 30);
+                break;
+            default:
+                telemetry.addData("ERROR: ", "Block switch/case logic");
+                break;
+        }
+        */
+
+        telemetry.addData("Position", "%s", block.toString());
+        bot.liftToPosition(0.5, liftBottom + (int) (5.5 * ((1680 * 1.0) / (4.0 * Math.PI))), 10);
+        bot.encoderDrive(0.5, 25, 25, 30);
+
+        double timeout = runtime.milliseconds() + 500;
+        while(timeout <= runtime.milliseconds()) {}
+
+        bot.servoPosition(0.75);
+
+        timeout += 1000;
+        while(timeout <= runtime.milliseconds()) {
+        }
+
+        bot.liftToPosition(0.5, liftBottom + (int) (10 * ((1680 * 1.0) / (4.0 * Math.PI))), 10);
+        bot.encoderDrive(0.5, -1, -1, 30);
+
+        timeout += 500;
+        while(timeout <= runtime.milliseconds()) {
+        }
+
+        bot.encoderDrive(0.5, -30, -30, 30);
+        bot.liftToPosition(0.5, liftBottom + (int) (5.5 * ((1680 * 1.0) / (4.0 * Math.PI))), 10);
+
+        currentAngle = angle(angles.angleUnit, angles.firstAngle);
+
+        while(Math.abs(currentAngle) > startAngle + 15) {
+            bot.setDriveTrain(-0.5,0.5);
+            angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+            currentAngle = angle(angles.angleUnit, angles.firstAngle);
+
+            telemetry.addData("Start Angle: ", "%.2f", startAngle);
+            telemetry.addData("Target Angle: ", "%.2f", targetAngle);
+            telemetry.addData("Current Angle: ", "%.2f", currentAngle);
+            telemetry.addData("Loop? ", "%b", (currentAngle < targetAngle));
+            telemetry.update();
+        }
+
+        bot.encoderDrive(0.5, -16, -16, 30);
     }
 
     public static double rangeSensorFunction() {

@@ -195,10 +195,10 @@ public class Bot {
             }
 
             // Stop all motion;
-            liftMotor.setPower(0);
+            // liftMotor.setPower(0);
 
             // Turn off RUN_TO_POSITION
-            liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            // liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
     }
 
