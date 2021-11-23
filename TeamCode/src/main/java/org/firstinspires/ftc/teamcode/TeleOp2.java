@@ -15,7 +15,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 import java.util.Locale;
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Electric Boogaloo", group = "TeleOp")
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Auto Testing", group = "TeleOp")
 public class TeleOp2 extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     BNO055IMU imu;
@@ -50,47 +50,31 @@ public class TeleOp2 extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
+        bot.liftRunToPosition();
+
         while (opModeIsActive()) {
             // If your number X falls between A and B, and you would like Y to fall between C and D, you can apply the following linear transform:
             // Y = (X-A)/(B-A) * (D-C) + C
             bot.setDriveTrain(-gamepad1.left_stick_y * 0.75, -gamepad1.right_stick_y * 0.75);
 
-            if(gamepad1.left_bumper) {
-                // bot.liftEndRunToPosition();
-                bot.setLift(0.4);
-            }
-            else if (gamepad1.left_trigger > 0.2) {
-                // bot.liftEndRunToPosition();
-                bot.setLift(-0.4);
-            }
-            else {
-                bot.liftRunToPosition();
-                // bot.setLift(0);
-            }
-
             if(gamepad1.a && servoTimeout <= runtime.milliseconds()) {
-                bot.servoPosition(servoPosition);
-                servoPosition = (servoPosition == 0.1625) ? 0.75 : 0.1625;
+                bot.liftToPosition(0.5, liftBottom + (int) (17 * ((1680 * 1.0) / (4.0 * Math.PI))), 10);
                 servoTimeout = runtime.milliseconds() + 250;
             }
-
-            if(gamepad1.right_trigger > 0.2 && servoTimeout <= runtime.milliseconds()) {
+            else if(gamepad1.b && servoTimeout <= runtime.milliseconds()) {
+                bot.liftToPosition(0.5, liftBottom + (int) (15 * ((1680 * 1.0) / (4.0 * Math.PI))), 10);
+                servoTimeout = runtime.milliseconds() + 250;
+            }
+            else if(gamepad1.y && servoTimeout <= runtime.milliseconds()) {
+                bot.liftToPosition(0.5, liftBottom + (int) (13 * ((1680 * 1.0) / (4.0 * Math.PI))), 10);
+                servoTimeout = runtime.milliseconds() + 250;
+            }
+            else if(gamepad1.x && servoTimeout <= runtime.milliseconds()) {
                 bot.liftToPosition(0.5, liftBottom, 10);
                 servoTimeout = runtime.milliseconds() + 250;
             }
-            else if(gamepad1.right_bumper && servoTimeout <= runtime.milliseconds()) {
-                bot.liftToPosition(0.5, liftTop, 10);
-                servoTimeout = runtime.milliseconds() + 250;
-            }
-
-            if(gamepad1.y) {
-                bot.setSpin(1);
-            }
-            else if(gamepad1.b) {
-                bot.setSpin(-1);
-            }
             else {
-                bot.setSpin(0);
+                bot.liftRunToPosition();
             }
 
             Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);

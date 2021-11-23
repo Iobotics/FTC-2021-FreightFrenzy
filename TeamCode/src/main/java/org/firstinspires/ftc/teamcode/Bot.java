@@ -193,12 +193,6 @@ public class Bot {
                     (runtime.seconds() < timeoutS) &&
                     (liftMotor.isBusy())) {
             }
-
-            // Stop all motion;
-            // liftMotor.setPower(0);
-
-            // Turn off RUN_TO_POSITION
-            // liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
     }
 

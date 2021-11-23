@@ -57,11 +57,11 @@ public class TeleOp extends LinearOpMode {
 
             if(gamepad1.left_bumper) {
                 // bot.liftEndRunToPosition();
-                bot.setLift(0.4);
+                bot.setLift(0.8);
             }
             else if (gamepad1.left_trigger > 0.2) {
                 // bot.liftEndRunToPosition();
-                bot.setLift(-0.4);
+                bot.setLift(-0.6);
             }
             else {
                 bot.liftRunToPosition();
