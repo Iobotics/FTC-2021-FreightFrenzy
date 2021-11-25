@@ -37,7 +37,6 @@ public class TeleOp2 extends LinearOpMode {
         imu.initialize(parameters);
 
         int liftBottom = bot.getLiftPosition();
-        int liftTop = liftBottom + (int) (12 * ((1680 * 1.0) / (4.0 * Math.PI)));
 
         double liftTimeout = 0;
 
@@ -57,24 +56,29 @@ public class TeleOp2 extends LinearOpMode {
             // Y = (X-A)/(B-A) * (D-C) + C
             bot.setDriveTrain(-gamepad1.left_stick_y * 0.75, -gamepad1.right_stick_y * 0.75);
 
-            if(gamepad1.a && servoTimeout <= runtime.milliseconds()) {
-                bot.liftToPosition(0.5, liftBottom + (int) (17 * ((1680 * 1.0) / (4.0 * Math.PI))), 10);
-                servoTimeout = runtime.milliseconds() + 250;
+            if(gamepad1.a && liftTimeout <= runtime.milliseconds()) {
+                bot.liftToPosition(0.5, liftBottom + (int) (15.5 * ((1680 * 1.0) / (4.0 * Math.PI))), 10);
+                liftTimeout = runtime.milliseconds() + 250;
             }
-            else if(gamepad1.b && servoTimeout <= runtime.milliseconds()) {
-                bot.liftToPosition(0.5, liftBottom + (int) (15 * ((1680 * 1.0) / (4.0 * Math.PI))), 10);
-                servoTimeout = runtime.milliseconds() + 250;
+            else if(gamepad1.b && liftTimeout <= runtime.milliseconds()) {
+                bot.liftToPosition(0.5, liftBottom + (int) (14 * ((1680 * 1.0) / (4.0 * Math.PI))), 10);
+                liftTimeout = runtime.milliseconds() + 250;
             }
-            else if(gamepad1.y && servoTimeout <= runtime.milliseconds()) {
-                bot.liftToPosition(0.5, liftBottom + (int) (13 * ((1680 * 1.0) / (4.0 * Math.PI))), 10);
-                servoTimeout = runtime.milliseconds() + 250;
+            else if(gamepad1.y && liftTimeout <= runtime.milliseconds()) {
+                bot.liftToPosition(0.5, liftBottom + (int) (12.5 * ((1680 * 1.0) / (4.0 * Math.PI))), 10);
+                liftTimeout = runtime.milliseconds() + 250;
             }
-            else if(gamepad1.x && servoTimeout <= runtime.milliseconds()) {
+            else if(gamepad1.x && liftTimeout <= runtime.milliseconds()) {
                 bot.liftToPosition(0.5, liftBottom, 10);
-                servoTimeout = runtime.milliseconds() + 250;
+                liftTimeout = runtime.milliseconds() + 250;
             }
             else {
                 bot.liftRunToPosition();
+            }
+
+            if(gamepad1.left_bumper) {
+                bot.servoPosition(servoPosition);
+                servoPosition = (servoPosition == 0.1625) ? 0.75 : 0.1625;
             }
 
             Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);

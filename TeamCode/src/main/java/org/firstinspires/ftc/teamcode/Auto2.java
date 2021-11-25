@@ -14,8 +14,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
-@Autonomous(name = "Auto")
-public class Auto extends LinearOpMode {
+@Autonomous(name = "Auto w/ White Square Thing")
+public class Auto2 extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     public static Rev2mDistanceSensor rangeSensor;
     public enum piecePosition {
@@ -31,12 +31,12 @@ public class Auto extends LinearOpMode {
         rangeSensor = hardwareMap.get(Rev2mDistanceSensor.class, "sensor_range");
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-            parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-            parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-            parameters.calibrationDataFile = "BNO055IMUCalibration.json";
-            parameters.loggingEnabled = true;
-            parameters.loggingTag = "IMU";
-            parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json";
+        parameters.loggingEnabled = true;
+        parameters.loggingTag = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
 
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
@@ -85,48 +85,6 @@ public class Auto extends LinearOpMode {
         }
         bot.setDriveTrain(0,0);
         bot.encoderDrive(0.5, -3, -3, 30);
-        /*
-        switch (block) {
-            case close:
-                startAngle = angle(angles.angleUnit, angles.firstAngle);
-                targetAngle = startAngle + (90 - 15);
-                currentAngle = angle(angles.angleUnit, angles.firstAngle);
-
-                while(Math.abs(currentAngle) < targetAngle) {
-                    bot.setDriveTrain(0.5,-0.5);
-                    angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-                    currentAngle = angle(angles.angleUnit, angles.firstAngle);
-
-                    telemetry.addData("Start Angle: ", "%.2f", startAngle);
-                    telemetry.addData("Target Angle: ", "%.2f", targetAngle);
-                    telemetry.addData("Current Angle: ", "%.2f", currentAngle);
-                    telemetry.addData("Loop? ", "%b", (currentAngle < targetAngle));
-                    telemetry.update();
-                }
-                bot.setDriveTrain(0,0);
-                bot.encoderDrive(0.5, -3, -3, 30);
-                break;
-            default:
-                startAngle = angle(angles.angleUnit, angles.firstAngle);
-                targetAngle = startAngle + (90 - 12);
-                currentAngle = angle(angles.angleUnit, angles.firstAngle);
-
-                while(Math.abs(currentAngle) < targetAngle) {
-                    bot.setDriveTrain(-0.5,0.5);
-                    angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-                    currentAngle = angle(angles.angleUnit, angles.firstAngle);
-
-                    telemetry.addData("Start Angle: ", "%.2f", startAngle);
-                    telemetry.addData("Target Angle: ", "%.2f", targetAngle);
-                    telemetry.addData("Current Angle: ", "%.2f", currentAngle);
-                    telemetry.addData("Loop? ", "%b", (currentAngle < targetAngle));
-                    telemetry.update();
-                }
-                bot.setDriveTrain(0,0);
-                bot.encoderDrive(0.5, -3, -3, 30);
-                break;
-        }
-        */
 
         switch (block) {
             case close:
@@ -219,6 +177,24 @@ public class Auto extends LinearOpMode {
 
         bot.encoderDrive(0.5, -15, -15, 30);
         bot.liftToPosition(0.5, liftBottom, 10);
+        bot.encoderDrive(0.5, -5, -5, 30);
+
+        currentAngle = angle(angles.angleUnit, angles.firstAngle);
+
+        while(Math.abs(currentAngle) > targetAngle) {
+            bot.setDriveTrain(0.5,-0.5);
+            angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+            currentAngle = angle(angles.angleUnit, angles.firstAngle);
+
+            telemetry.addData("Start Angle: ", "%.2f", startAngle);
+            telemetry.addData("Target Angle: ", "%.2f", targetAngle);
+            telemetry.addData("Current Angle: ", "%.2f", currentAngle);
+            telemetry.addData("Loop? ", "%b", (currentAngle < targetAngle));
+            telemetry.update();
+        }
+
+        bot.liftToPosition(0.5, liftBottom + (int) (3 * ((1680 * 1.0) / (4.0 * Math.PI))), 10);
+        bot.encoderDrive(1, 30, 30, 30);
     }
 
     public static double rangeSensorFunction() {
