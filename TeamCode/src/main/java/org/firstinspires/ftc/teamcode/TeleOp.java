@@ -84,7 +84,7 @@ public class TeleOp extends LinearOpMode {
             }
 
             if(gamepad1.y) {
-                bot.setSpin(1);
+                bot.setSpin(-1);
             }
             else if(gamepad1.b) {
                 bot.setSpin(-1);

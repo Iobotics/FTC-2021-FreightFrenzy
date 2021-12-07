@@ -14,8 +14,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
-@Autonomous(name = "Auto w/ Duck")
-public class Auto2 extends LinearOpMode {
+@Autonomous(name = "Auto w/ Duck + White Square")
+public class Auto3 extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     public static Rev2mDistanceSensor rangeSensor;
     public enum piecePosition {
@@ -88,7 +88,7 @@ public class Auto2 extends LinearOpMode {
         switch (block) {
             case close:
                 telemetry.addData("Position", "%s", block.toString());
-                bot.liftToPosition(0.5, liftBottom + (int) (14.75 * ((1680 * 1.0) / (4.0 * Math.PI))), 10);
+                bot.liftToPosition(0.5, liftBottom + (int) (15 * ((1680 * 1.0) / (4.0 * Math.PI))), 10);
                 bot.encoderDrive(0.5, -18.5, -18.5, 30);
 
                 timeout = runtime.milliseconds() + 1000;
@@ -115,7 +115,7 @@ public class Auto2 extends LinearOpMode {
                 break;
             case medium:
                 telemetry.addData("Position", "%s", block.toString());
-                bot.liftToPosition(0.5, liftBottom + (int) (13.25 * ((1680 * 1.0) / (4.0 * Math.PI))), 10);
+                bot.liftToPosition(0.5, liftBottom + (int) (13.75 * ((1680 * 1.0) / (4.0 * Math.PI))), 10);
                 bot.encoderDrive(0.5, -18.5, -18.5, 30);
 
                 timeout = runtime.milliseconds() + 1000;
@@ -186,16 +186,38 @@ public class Auto2 extends LinearOpMode {
             telemetry.update();
         }
 
-        bot.encoderDrive(0.5, -15.75, -15.75, 30);
+        bot.encoderDrive(0.5, -15.5, -15.5, 30);
         bot.liftToPosition(0.5, liftBottom, 10);
 
-        bot.encoderDrive(0.5, -20, -20, 30);
+        bot.encoderDrive(0.5, -21.5, -21.5, 30);
 
-        bot.setSpin(-1);
-        sleep(5000);
+        bot.setSpin(-0.75);
+        sleep(4000);
         bot.setSpin(0);
 
-        bot.encoderDrive(0.5, 20, 20, 30);
+        bot.encoderDrive(0.5, 11, 11, 30);
+
+        startAngle = angle(angles.angleUnit, angles.firstAngle);
+        targetAngle = angle(angles.angleUnit, angles.firstAngle) - (90);
+        currentAngle = angle(angles.angleUnit, angles.firstAngle);
+
+        while(currentAngle > targetAngle) {
+            bot.setDriveTrain(0.5,-0.5);
+            angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+            currentAngle = angle(angles.angleUnit, angles.firstAngle);
+
+            telemetry.addData("Start Angle: ", "%.2f", startAngle);
+            telemetry.addData("Target Angle: ", "%.2f", targetAngle);
+            telemetry.addData("Current Angle: ", "%.2f", currentAngle);
+            telemetry.addData("Loop? ", "%b", (currentAngle < targetAngle));
+            telemetry.update();
+        }
+        bot.setDriveTrain(0,0);
+
+        bot.liftToPosition(0.5, liftBottom + (int) (5.5 * ((1680 * 1.0) / (4.0 * Math.PI))), 10);
+        bot.encoderDrive(0.5, 30, 30, 30);
+        bot.encoderDrive(1, 110-30, 110-30, 30);
+        bot.liftToPosition(0.5, liftBottom, 10);
     }
 
     public static double rangeSensorFunction() {

@@ -61,7 +61,7 @@ public class Auto extends LinearOpMode {
         telemetry.addData("Position", "%s", block.toString());
         telemetry.update();
 
-        bot.encoderDrive(0.5, 11, 11, 30);
+        bot.encoderDrive(0.5, 12, 12, 30);
 
         Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         double startAngle;
@@ -85,54 +85,12 @@ public class Auto extends LinearOpMode {
         }
         bot.setDriveTrain(0,0);
         bot.encoderDrive(0.5, -3, -3, 30);
-        /*
-        switch (block) {
-            case close:
-                startAngle = angle(angles.angleUnit, angles.firstAngle);
-                targetAngle = startAngle + (90 - 15);
-                currentAngle = angle(angles.angleUnit, angles.firstAngle);
-
-                while(Math.abs(currentAngle) < targetAngle) {
-                    bot.setDriveTrain(0.5,-0.5);
-                    angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-                    currentAngle = angle(angles.angleUnit, angles.firstAngle);
-
-                    telemetry.addData("Start Angle: ", "%.2f", startAngle);
-                    telemetry.addData("Target Angle: ", "%.2f", targetAngle);
-                    telemetry.addData("Current Angle: ", "%.2f", currentAngle);
-                    telemetry.addData("Loop? ", "%b", (currentAngle < targetAngle));
-                    telemetry.update();
-                }
-                bot.setDriveTrain(0,0);
-                bot.encoderDrive(0.5, -3, -3, 30);
-                break;
-            default:
-                startAngle = angle(angles.angleUnit, angles.firstAngle);
-                targetAngle = startAngle + (90 - 12);
-                currentAngle = angle(angles.angleUnit, angles.firstAngle);
-
-                while(Math.abs(currentAngle) < targetAngle) {
-                    bot.setDriveTrain(-0.5,0.5);
-                    angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-                    currentAngle = angle(angles.angleUnit, angles.firstAngle);
-
-                    telemetry.addData("Start Angle: ", "%.2f", startAngle);
-                    telemetry.addData("Target Angle: ", "%.2f", targetAngle);
-                    telemetry.addData("Current Angle: ", "%.2f", currentAngle);
-                    telemetry.addData("Loop? ", "%b", (currentAngle < targetAngle));
-                    telemetry.update();
-                }
-                bot.setDriveTrain(0,0);
-                bot.encoderDrive(0.5, -3, -3, 30);
-                break;
-        }
-        */
 
         switch (block) {
             case close:
                 telemetry.addData("Position", "%s", block.toString());
-                bot.liftToPosition(0.5, liftBottom + (int) (15.25 * ((1680 * 1.0) / (4.0 * Math.PI))), 10);
-                bot.encoderDrive(0.5, -18, -18, 30);
+                bot.liftToPosition(0.5, liftBottom + (int) (14.75 * ((1680 * 1.0) / (4.0 * Math.PI))), 10);
+                bot.encoderDrive(0.5, -18.5, -18.5, 30);
 
                 timeout = runtime.milliseconds() + 1000;
                 while(timeout <= runtime.milliseconds()) {}
@@ -154,8 +112,8 @@ public class Auto extends LinearOpMode {
                 break;
             case medium:
                 telemetry.addData("Position", "%s", block.toString());
-                bot.liftToPosition(0.5, liftBottom + (int) (13.75 * ((1680 * 1.0) / (4.0 * Math.PI))), 10);
-                bot.encoderDrive(0.5, -18, -18, 30);
+                bot.liftToPosition(0.5, liftBottom + (int) (13.25 * ((1680 * 1.0) / (4.0 * Math.PI))), 10);
+                bot.encoderDrive(0.5, -18.5, -18.5, 30);
 
                 timeout = runtime.milliseconds() + 1000;
                 while(timeout <= runtime.milliseconds()) {}
@@ -177,8 +135,8 @@ public class Auto extends LinearOpMode {
                 break;
             case far:
                 telemetry.addData("Position", "%s", block.toString());
-                bot.liftToPosition(0.5, liftBottom + (int) (12.75 * ((1680 * 1.0) / (4.0 * Math.PI))), 10);
-                bot.encoderDrive(0.5, -18, -18, 30);
+                bot.liftToPosition(0.5, liftBottom + (int) (12.5 * ((1680 * 1.0) / (4.0 * Math.PI))), 10);
+                bot.encoderDrive(0.5, -19, -19, 30);
 
                 timeout = runtime.milliseconds() + 1000;
                 while(timeout <= runtime.milliseconds()) {}
@@ -217,7 +175,7 @@ public class Auto extends LinearOpMode {
             telemetry.update();
         }
 
-        bot.encoderDrive(0.5, -15, -15, 30);
+        bot.encoderDrive(0.5, -15.75, -15.75, 30);
         bot.liftToPosition(0.5, liftBottom, 10);
     }
 
